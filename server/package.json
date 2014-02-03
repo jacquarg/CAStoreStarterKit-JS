@@ -1,0 +1,13 @@
+{
+    "name": "CA-SDK-server",
+    "private": true,
+    "version": "0.0.0",
+    "dependencies": {
+        "http-proxy": "1.0.1",
+        "express": "3.4.8"
+    },
+    "main": "app.js",
+    "repository": "",
+    "author": "",
+    "license": ""
+}
