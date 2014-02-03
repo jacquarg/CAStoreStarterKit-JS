@@ -44,7 +44,7 @@ onCaStoreInitialized will be called back once the authentication procedure is co
 The proxy server can be ommited for production or when running on phonegap.
 
 ###Querying the API
-Queries https://www.creditagricolestore.fr/castore-data-provider/rest/V1/utilisateurs/<user_id>/comptesBAM
+Queries https://www.creditagricolestore.fr/castore-data-provider/rest/V1/utilisateurs/user_id/comptesBAM
 
     caStore.session.GET('comptesBAM', function(err, response){
         console.log('BAM:', response.data)
