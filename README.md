@@ -24,6 +24,10 @@ The authentication iframe, however, has its request token set via cookies, and w
 
 Until a session save system is set in your application, you will need to delete cookies from www.creditagricolestore.fr before relaunching the application in your browser. 
 
+###Callback URL
+When testing in your browser, the callback URL's domain and your application domain should match, for the url redirection parameters to be properly read.
+Note that launching your application from the filesystem will give it a null domain, which won't match any other domain.
+
 ## Proxy and content server
 The started kit comes with a proxy and a static webserver.
 
