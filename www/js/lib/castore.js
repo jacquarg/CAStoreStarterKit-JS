@@ -77,6 +77,21 @@ var CAStore = (function(){
         }
     };
 
+    CAStore.prototype.import = function(toImport, callback){
+        this.oauth = toImport.oauth;
+        this.request = toImport.request;
+        this.session.userId = null;
+
+        this._getSession(callback);
+    };
+
+    CAStore.prototype.export = function(){
+        return {
+            oauth: this.oauth,
+            request: this.request
+        };
+    };
+
     CAStore.prototype._getRequestToken = function(callback){
         var self = this;
         var descriptor =  this.createDescriptor('POST',
@@ -147,14 +162,19 @@ var CAStore = (function(){
 
         function onSessionObtained(err, response){
             if (err)
-                return (callback)? callback(err) : null;
+                return error(err);
             if (!response || !response.response)
-                return (callback)? callback('Error getting session.') : null;
+                return error('Error getting session');
             response = parseResponseToJSON(response);
+            if (!response || !response.data || !response.data.id)
+                return error('Error getting session');
             self.session.userId = response.data.id;
-
             if (callback)
                 callback(null, self);
+
+            function error(err){
+                return (callback)? callback(err) : null;
+            }
         }
     };
 

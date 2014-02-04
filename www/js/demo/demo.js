@@ -11,17 +11,71 @@ $(function(){
         'http://localhost.fr:8081/callback_url.html',
         'http://localhost.fr:8080/');
 
-    caStore.init(loginContainer[0], onCAStoreInitialized);
+    var savedSession;
+    try {
+        savedSession = JSON.parse(localStorage.getItem('savedSession'));
+    }
+    catch(error){}
 
-    function onCAStoreInitialized(err, caStore){
-        if (err)
-            return console.log('Error', err);
-        loginContainer.hide();
-        caStore.session.GET('comptesBAM', onBAMObtained);
+    var sessionStore = (function(){
+        var LOCALSTORAGE_SESSION_KEY = 'savedSession';
+        return {
+            load: function(){
+                try {
+                    return JSON.parse(localStorage.getItem(LOCALSTORAGE_SESSION_KEY));
+                }
+                catch(error){
+                    return null;
+                }
+            },
+
+            save: function(){
+                localStorage.setItem(LOCALSTORAGE_SESSION_KEY, JSON.stringify(session));
+            },
+
+            clear: function(){
+                localStorage.removeItem(LOCALSTORAGE_SESSION_KEY);
+            }
+        }
+    }());
+
+    (function initialize(){
+        var session = sessionStore.load();
+        if (savedSession)
+            initializeCAStoreWithSession(savedSession);
+        else
+            initializeCAStore();
+    }());
+
+    function initializeCAStoreWithSession(savedSession){
+        caStore.import(savedSession, onImportComplete);
+
+        function onImportComplete(err, caStore){
+            if (!err)
+                return getBAM();
+            sessionStore.clear();
+            initializeCAStore();
+        }
     }
 
-    function onBAMObtained(err, response){
-        var account = response.data.compteBAMDTOs[0];
-        alert('BAM!\nId:' + account.id + '\nAlias: ' + account.alias);
+    function initializeCAStore(){
+        caStore.init(loginContainer[0], onCAStoreInitialized);
+
+        function onCAStoreInitialized(err, caStore){
+            loginContainer.hide();
+            if (err)
+                return console.log('Error initializing CAStore', err);
+            sessionStore.save(caStore.export());
+            getBAM();
+        }
+    }
+
+    function getBAM(){
+        caStore.session.GET('comptesBAM', onBAMObtained);
+
+        function onBAMObtained(err, response){
+            var account = response.data.compteBAMDTOs[0];
+            alert('BAM!\nId:' + account.id + '\nAlias: ' + account.alias);
+        }
     }
 });
