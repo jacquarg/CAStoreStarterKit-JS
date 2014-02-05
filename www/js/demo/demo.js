@@ -11,12 +11,6 @@ $(function(){
         'http://localhost.fr:8081/callback_url.html',
         'http://localhost.fr:8080/');
 
-    var savedSession;
-    try {
-        savedSession = JSON.parse(localStorage.getItem('savedSession'));
-    }
-    catch(error){}
-
     var sessionStore = (function(){
         var LOCALSTORAGE_SESSION_KEY = 'savedSession';
         return {
@@ -29,7 +23,7 @@ $(function(){
                 }
             },
 
-            save: function(){
+            save: function(session){
                 localStorage.setItem(LOCALSTORAGE_SESSION_KEY, JSON.stringify(session));
             },
 
@@ -41,14 +35,14 @@ $(function(){
 
     (function initialize(){
         var session = sessionStore.load();
-        if (savedSession)
-            initializeCAStoreWithSession(savedSession);
+        if (session)
+            initializeCAStoreWithSession(session);
         else
             initializeCAStore();
     }());
 
-    function initializeCAStoreWithSession(savedSession){
-        caStore.import(savedSession, onImportComplete);
+    function initializeCAStoreWithSession(session){
+        caStore.import(session, onImportComplete);
 
         function onImportComplete(err, caStore){
             if (!err)
