@@ -238,7 +238,7 @@ var CAStore = (function(){
     function parseResponseToJSON(response){
         var data = response.response;
         try {
-            data = JSON.parse(data);
+            data = JSON.parse(stringifyIds(data));
         }
         catch(error){}
 
@@ -247,6 +247,10 @@ var CAStore = (function(){
             status: response.status,
             data: data
         };
+        
+        function stringifyIds(data){
+            return data.replace(/("id"\s*\:\s*)([0-9]+)/g, '$1"$2"');
+        }
     }
 
     CAStore.prototype.query = function(method, route, headers, payload, callback){
