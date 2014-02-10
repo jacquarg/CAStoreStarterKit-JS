@@ -26,6 +26,7 @@ Until a session save system is set in your application, you will need to delete 
 
 ###Callback URL
 When testing in your browser, the callback URL's domain and your application domain should match, for the url redirection parameters to be properly read.
+When running on device, the callback URL should not redirect.
 Note that launching your application from the filesystem will give it a null domain, which won't match any other domain.
 
 ## Proxy and content server
